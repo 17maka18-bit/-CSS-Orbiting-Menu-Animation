@@ -1,0 +1,432 @@
+
+/* ==========================================
+   1. ძირითადი პარამეტრები
+========================================== */
+
+:root {
+  --avatar-size: 100px;
+  --item-size: 56px;
+  --orbit-radius: 165px;
+  --orbit-spacing: 0px;
+  --duration: 24s;
+  --icon-color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  font-family: "Montserrat", sans-serif;
+  background: #eef2f8;
+}
+
+/* ==========================================
+   2. მთავარი კონტეინერი
+========================================== */
+
+.menu {
+  --size: var(--avatar-size);
+
+  position: relative;
+  display: grid;
+  place-items: center;
+
+  width: var(--size);
+  height: var(--size);
+}
+
+/* ==========================================
+   3. ცენტრალური ავატარი
+========================================== */
+
+.avatar {
+  --size: var(--avatar-size);
+
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 2;
+
+  width: var(--size);
+  height: var(--size);
+
+  background: #162a4c;
+  border-radius: calc(0.31 * var(--size));
+
+  box-shadow: 0 12px 30px rgba(22, 42, 76, 0.25);
+
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.avatar::before {
+  content: "";
+  position: absolute;
+  width: 35%;
+  height: 35%;
+  left: 32.5%;
+  top: 18%;
+
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.avatar::after {
+  content: "";
+  position: absolute;
+  width: 60%;
+  height: 32%;
+  left: 20%;
+  bottom: 15%;
+
+  background: #ffffff;
+  border-radius: 50% 50% 25% 25%;
+}
+
+.avatar:hover {
+  transform: scale(1.08);
+}
+
+/* ==========================================
+   4. ორბიტის კონტეინერი
+========================================== */
+
+.orbit {
+  grid-area: 1 / 1;
+
+  position: relative;
+  width: 0;
+  height: 0;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  transition: transform 0.5s ease;
+}
+
+/* ==========================================
+   5. რვა ელემენტის განლაგება
+========================================== */
+
+.orbit li {
+  --angle: calc(var(--index) * 45deg);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: var(--item-size);
+  height: var(--item-size);
+
+  margin-top: calc(var(--item-size) / -2);
+  margin-left: calc(var(--item-size) / -2);
+
+  transform:
+    rotate(var(--angle))
+    translateY(calc(-1 * (var(--orbit-radius) + var(--orbit-spacing))));
+
+  transition: transform 0.5s ease;
+}
+
+/* თითოეული ელემენტის კუთხე */
+
+.adduser {
+  --index: 0;
+}
+
+.calendar {
+  --index: 1;
+}
+
+.chart {
+  --index: 2;
+}
+
+.gavel {
+  --index: 3;
+}
+
+.plane {
+  --index: 4;
+}
+
+.logout {
+  --index: 5;
+}
+
+.drink {
+  --index: 6;
+}
+
+.fingerprint {
+  --index: 7;
+}
+
+/* ==========================================
+   6. ორბიტალური ანიმაცია
+========================================== */
+
+.item-wrap {
+  width: 100%;
+  height: 100%;
+
+  animation: orbit 24s linear infinite;
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================
+   7. აიქონების საპირისპირო ბრუნვა
+========================================== */
+
+.item {
+  --size: var(--item-size);
+
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  width: var(--size);
+  height: var(--size);
+
+  border-radius: 50%;
+  background: #ffffff;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+  cursor: pointer;
+
+  animation: counter-rotate 24s linear infinite;
+}
+
+@keyframes counter-rotate {
+  from {
+    transform: rotate(calc(-1 * var(--angle)));
+  }
+
+  to {
+    transform: rotate(calc(-360deg - var(--angle)));
+  }
+}
+
+/* ==========================================
+   8. აიქონების ფერები
+========================================== */
+
+.icon {
+  display: grid;
+  place-items: center;
+
+  width: 26px;
+  height: 26px;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+
+  fill: #162a4c;
+
+  transition: fill 0.3s ease;
+}
+
+.item:hover {
+  background: #162a4c;
+}
+
+.item:hover .icon svg {
+  fill: var(--icon-color);
+}
+
+/* ==========================================
+   9. Tooltip
+========================================== */
+
+.item::after {
+  content: attr(data-category);
+
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  padding: 8px 12px;
+
+  border-radius: 6px;
+
+  background: #162a4c;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: opacity 0.3s ease;
+
+  pointer-events: none;
+}
+
+.item:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ==========================================
+   10. Hover-ზე ანიმაციის შეჩერება
+========================================== */
+
+.orbit:hover .item-wrap,
+.orbit:hover .item {
+  animation-play-state: paused;
+}
+
+/* ==========================================
+   11. ავატარზე Hover — ორბიტის გაფართოება
+========================================== */
+
+.menu:has(.avatar:hover) {
+  --orbit-spacing: 35px;
+}
+
+/* ==========================================
+   12. დამატებითი პულსაციის ეფექტი
+========================================== */
+
+.avatar {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(22, 42, 76, 0.18);
+  }
+
+  50% {
+    box-shadow: 0 0 0 18px rgba(22, 42, 76, 0);
+  }
+}
+
+/* ==========================================
+   13. მობილურის ეკრანი
+========================================== */
+
+@media (max-width: 600px) {
+  :root {
+    --avatar-size: 75px;
+    --item-size: 44px;
+    --orbit-radius: 115px;
+  }
+
+  .icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* მოძრაობის შემცირების პარამეტრი */
+
+@media (prefers-reduced-motion: reduce) {
+  .item-wrap,
+  .item,
+  .avatar {
+    animation: none;
+  }
+}
+
+
+/* ==========================================
+   ორბიტის მოძრაობის გასწორება
+========================================== */
+
+/* თითოეული ელემენტის საწყისი კუთხე */
+.orbit li {
+  --angle: calc(var(--index) * 45deg);
+
+  transform: none;
+  transform-origin: center;
+
+  animation: orbit-movement 24s linear infinite;
+}
+
+/* რეალური მოძრაობა ცენტრის გარშემო */
+@keyframes orbit-movement {
+  from {
+    transform:
+      rotate(var(--angle))
+      translateY(
+        calc(-1 * (var(--orbit-radius) + var(--orbit-spacing)))
+      );
+  }
+
+  to {
+    transform:
+      rotate(calc(var(--angle) + 360deg))
+      translateY(
+        calc(-1 * (var(--orbit-radius) + var(--orbit-spacing)))
+      );
+  }
+}
+
+/* ძველი ანიმაციის გამორთვა */
+.item-wrap {
+  animation: none;
+}
+
+/* აიქონის საპირისპირო ბრუნვა */
+.item {
+  animation: counter-rotate 24s linear infinite;
+}
+
+@keyframes counter-rotate {
+  from {
+    transform: rotate(calc(-1 * var(--angle)));
+  }
+
+  to {
+    transform: rotate(calc(-1 * var(--angle) - 360deg));
+  }
+}
+
+/* მაუსის მიტანისას მოძრაობის შეჩერება */
+.orbit li:hover,
+.orbit li:hover .item {
+  animation-play-state: paused;
+}
+
+/* მოძრაობის შემცირების პარამეტრი */
+@media (prefers-reduced-motion: reduce) {
+  .orbit li,
+  .item {
+    animation: none;
+  }
+
+  .orbit li {
+    transform:
+      rotate(var(--angle))
+      translateY(calc(-1 * var(--orbit-radius)));
+  }
+
+  .item {
+    transform: rotate(calc(-1 * var(--angle)));
+  }
+}
